@@ -6,12 +6,7 @@ aa = ['SER', 'HIS', 'GLU', 'GLY', 'LYS',
       'ALA', 'LEU', 'GLN', 'PRO', 'MET',
       'ASP', 'PHE', 'VAL', 'THR', 'ILE',
       'ASN', 'ARG', 'TYR', 'CYS', 'TRP']
-def test_reading(fname,n):
-    if n==1:
-        x=read_txt(fname)
-    else:
-        x=read_csv(fname)
-    print (len(x))
+amino_acid_dict = {_: True for _ in aa}
 
 
 def read_txt(fname):
@@ -28,7 +23,6 @@ def read_txt(fname):
     return csv_data
 
 
-
 def read_csv(fname):
     # Filters can be introduced later here.
     csv_data = {}
@@ -42,7 +36,7 @@ def read_csv(fname):
                 csv_data[row[1]]['phi'] = numpy.append(csv_data[row[1]]['phi'], float(row[2]))
                 csv_data[row[1]]['psi'] = numpy.append(csv_data[row[1]]['psi'], float(row[3]))
     return csv_data
+
+
 if __name__ == "__main__":
-    fname = sys.argv[1]
-    n = int(sys.argv[2])
-    test_reading(fname,n)
+    read_csv(sys.argv[1])

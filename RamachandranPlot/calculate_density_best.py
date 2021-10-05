@@ -17,7 +17,7 @@ aa = ['SER', 'HIS', 'GLU', 'GLY', 'LYS',
 amino_acid_dict = {_: True for _ in aa}
 
 
-def read_csv(fname):
+def read_csv(fname,ds):
     # Filters can be introduced later here.
     csv_data = {}
     with open(fname) as csvfile:
@@ -26,8 +26,17 @@ def read_csv(fname):
             if row[1] in amino_acid_dict:
                 if row[1] not in csv_data:
                     csv_data[row[1]] = {'phi': [], 'psi': []}
-                csv_data[row[1]]['phi'].append(float(row[2]))
-                csv_data[row[1]]['psi'].append(float(row[3]))
+                if ds=='pdb':
+                    try:
+                        if float(row[5])<1.5:
+                            csv_data[row[1]]['phi'].append(float(row[2]))
+                            csv_data[row[1]]['psi'].append(float(row[3]))
+                    except ValueError:
+                        pass
+                elif ds=='af':
+                    if float(row[4])>90:
+                        csv_data[row[1]]['phi'].append(float(row[2]))
+                        csv_data[row[1]]['psi'].append(float(row[3]))
         for amino_acid in csv_data:
             csv_data[amino_acid]['phi'] = numpy.array(csv_data[amino_acid]['phi'])
             csv_data[amino_acid]['psi'] = numpy.array(csv_data[amino_acid]['psi'])
@@ -53,9 +62,9 @@ def get_index(angle,glist,ds):
 
 def calculate_density2(af_file, pdb_file, out_dir):
     logging.info("Reading af data..")
-    af_data = read_csv(af_file)
+    af_data = read_csv(af_file,'af')
     logging.info("Reading pdb data..")
-    pdb_data = read_csv(pdb_file)
+    pdb_data = read_csv(pdb_file,'pdb')
     logging.info('Done Reading')
     grid_size = 1
     s = list(numpy.arange(-180.0, 181.0, grid_size))
